@@ -190,6 +190,77 @@ var UIController = (function(){
         }
     };
 
+    var apearAnimation = function(){
+        var item = document.querySelector(DOMstirngs.inputBtn);
+        apearAnimation
+        item.animate([
+            // keyframes
+            { opacity: '0'},
+            { opacity: '0.25'},
+            { opacity: '0.5'},
+            { opacity: '0.75'},
+            { opacity: '1'}
+            
+          ], { 
+            // timing options
+            duration: 100,
+            
+          });
+    }
+
+    var insertItemAnimation = function(id){
+        var item = document.querySelector('#'+id);
+
+        item.animate([
+            // keyframes
+            { transform: 'translateY(30px)' },
+            { transform: 'translateY(20px)' },
+            { transform: 'translateY(10px)' },
+            { transform: 'translateY(5px)' },
+            { transform: 'translateY(3px)' },
+            { transform: 'translateY(1px)' }
+            
+          ], { 
+            // timing options
+            duration: 500,
+            
+          });
+    }
+
+    var removeItemAnimation = function(id){
+        var item, type, sign;
+        item = document.querySelector('#'+id);
+        type = id.substr(0,3);
+
+        type === 'inc' ? sign ='-' : sign ='';
+
+        console.log(type);
+        item.animate([
+            // keyframes
+            { transform: 'translateX('+sign+'10px)' },
+            { opacity: '1'},
+            { transform: 'translateX('+sign+'30px)' },
+            { opacity: '0.9'},
+            { transform: 'translateX('+sign+'70px)' },
+            { opacity: '0.7'},
+            { transform: 'translateX('+sign+'110px)' },
+            { opacity: '0.5'},
+            { transform: 'translateX('+sign+'150px)' },
+            { opacity: '0.3'},
+            { transform: 'translateX('+sign+'190px)' },
+            { opacity: '0.1'},
+            { transform: 'translateX('+sign+'240px)' },
+            { opacity: '0'}
+            
+          ], { 
+            // timing options
+            duration: 500,
+            
+          });
+    }
+
+
+
     return {
 
         getInput: function(){
@@ -203,14 +274,16 @@ var UIController = (function(){
 
         addListItem:function(obj, type){
             
-           var html, newHtml,element;
+           var html, newHtml,element, itemID;
             //1. Create HTML string with placeholder text
             if(type ==='inc'){
                 element = DOMstirngs.incomeContainer;
+                itemID = 'inc-';
                 html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value"> %value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
             else if(type ==='exp'){
                 element = DOMstirngs.expenseContainer;
+                itemID = 'exp-';
                 html ='<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value"> %value%</div><div class="item__percentage">%percentage%%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
 
@@ -223,7 +296,7 @@ var UIController = (function(){
             
             //3. Insert HTML to the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend',newHtml);
-    
+            insertItemAnimation(itemID+''+obj.id);
         },
 
         displayPercentages: function(percentages){
@@ -259,6 +332,7 @@ var UIController = (function(){
             } );
 
             document.querySelector(DOMstirngs.inputBtn).classList.toggle('red');
+            apearAnimation();
         },
 
         getDOMStrings: function(){
@@ -267,11 +341,22 @@ var UIController = (function(){
 
         deleteListItem:function(selectorID){
             var el = document.getElementById(selectorID);
-            el.parentNode.removeChild(el);
+            
+            
+            removeItemAnimation(selectorID);
+            window.setTimeout(()=>{
+                el.parentNode.removeChild(el);
+            }, 450);
+            
+            
         },
 
         clearFields(){
-            var fields,fieldsArr;
+            var fields,fieldsArr, declaredType;
+            declaredType = document.querySelector(DOMstirngs.inputType).value
+            if(declaredType === 'exp'){
+                this.changedType();
+            }
             document.querySelector(DOMstirngs.inputType).value = 'inc';
             fields = document.querySelectorAll(DOMstirngs.inputdescription + ','+DOMstirngs.inputValue);
             fieldsArr = Array.prototype.slice.call(fields);
@@ -279,6 +364,7 @@ var UIController = (function(){
                 element.value = "";
             });
             fieldsArr[0].focus();
+            
         },
 
         displayBudget: function(obj){
@@ -375,6 +461,7 @@ var controller = (function(budgetCtrl, UICtrl){
     var ctrlDeleteItem = function(event){
         var itemID,splitID,type,ID;
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        
         if(itemID){
             splitID = itemID.split('-');
             type = splitID[0];
