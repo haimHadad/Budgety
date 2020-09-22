@@ -259,6 +259,50 @@ var UIController = (function(){
           });
     }
 
+    var changeText = function(id, text, type){
+        item = document.querySelector(id);
+ 
+        item.animate([
+            // keyframes
+            { transform: 'translateY(0px)', opacity: '1' },
+            { transform: 'translateY(1px)', opacity: '0.9' },
+            { transform: 'translateY(4px)',  opacity: '0.7' },
+            { transform: 'translateY(9px)', opacity: '0.5'},   
+            { transform: 'translateY(14px)', opacity: '0.3' },
+            { transform: 'translateY(20px)', opacity: '0.3' }
+            
+          ], { 
+            // timing options
+            duration: 400,
+            
+          });
+
+          window.setTimeout(()=>{
+            item.style.display = "none";
+            document.querySelector(id).textContent = formatNumber(text, type);
+            item.style.display = "block";
+            item.animate([
+                // keyframes
+                { transform: 'translateY(-20px)', opacity: '0' },
+                { transform: 'translateY(-14px)', opacity: '0.3' },
+                { transform: 'translateY(-9px)',  opacity: '0.5' },
+                { transform: 'translateY(-4px)', opacity: '0.7'},   
+                { transform: 'translateY(1-1px)', opacity: '0.9' },
+                { transform: 'translateY(0px)', opacity: '1' }
+                
+              ], { 
+                // timing options
+                duration: 400,
+                
+              });
+        }, 400);
+
+
+        
+
+          
+    }
+
 
 
     return {
@@ -370,7 +414,8 @@ var UIController = (function(){
         displayBudget: function(obj){
             var type;
             obj.budget > 0 ? type ='inc' : type ='exp';
-                document.querySelector(DOMstirngs.budgetLabel).textContent = formatNumber(obj.budget, type);
+                changeText(DOMstirngs.budgetLabel, obj.budget,type);
+                
                 document.querySelector(DOMstirngs.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');  
                 document.querySelector(DOMstirngs.expenseLabel).textContent = formatNumber(obj.totalExp, 'exp');
                 

@@ -63,7 +63,9 @@ body {
     text-align: center;
     margin-bottom: 25px;
     letter-spacing: 2px;
+    
 }
+
 
 .budget__income,
 .budget__expenses {
@@ -169,6 +171,7 @@ body {
 
 
 .add__btn:active { transform: translateY(2px); }
+.add__btn:hover{font-size: 38px; margin-left: 8px;}
 
 .add__type:focus,
 .add__description:focus,
